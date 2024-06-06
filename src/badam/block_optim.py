@@ -23,7 +23,7 @@ class BlockOptimizer(Optimizer):
         self,
         base_optimizer: Optimizer,
         named_parameters_list,
-        block_prefix_list: List[str],
+        block_prefix_list: Optional[List[str]] = None,
         switch_block_every: int = 10,
         start_block: Optional[int] = None,
         switch_mode: str = "descending",

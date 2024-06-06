@@ -3,3 +3,5 @@
 llama/outputs/
 .vscode/*
 launch.json
+venv/
+*__pycache__*
