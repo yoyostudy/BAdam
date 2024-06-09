@@ -20,9 +20,9 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(model_name,
                                              device_map = "auto",
                                              torch_dtype = torch.bfloat16)
-    test_data = load_dataset('BramVanroy/ultrachat_200k_dutch', split = 'test_sft')
-    test_data = test_data.select(range(3072)).remove_columns(["prompt", "prompt_id"]) # Only part of the test data to limit the time spent on validation.
-    train_data = load_dataset('BramVanroy/ultrachat_200k_dutch', split = 'train_sft').remove_columns(["prompt", "prompt_id"])
+    datasets = load_dataset("FinGPT/fingpt-sentiment-train")
+    train_data = datasets['train']
+    test_data = datasets['train']
     optimizer = BlockOptimizer(base_optimizer = torch.optim.AdamW(model.parameters(), lr = 5.0e-5, weight_decay = 0.001),
                            named_parameters_list = list(model.named_parameters()),
                            block_prefix_list = None,
@@ -36,7 +36,7 @@ def main():
 
     # Set TrainingArguments
     training_args = TrainingArguments(
-                                    output_dir = './output',
+                                    output_dir = 'output',
                                     num_train_epochs = 1,
                                     max_steps = 8192,
                                     evaluation_strategy = "steps",
@@ -63,6 +63,7 @@ def main():
                         optimizers = (optimizer, None),
                         data_collator = DataCollatorForLanguageModeling(tokenizer, mlm = False),
                         args = training_args,
+                        dataset_text_field='instruction'
                         )
 
     # Perform Training
