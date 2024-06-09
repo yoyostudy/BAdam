@@ -5,3 +5,4 @@ llama/outputs/
 launch.json
 venv/
 *__pycache__*
+output/
